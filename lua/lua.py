@@ -8,6 +8,8 @@ class LuaEngine:
         self.LuaUpdate = None
         self.LuaDraw = None
 
+        self.Cache = []
+
     def UpdateGlobals(self):
         if self.Lua.globals()["update"]:
             self.LuaUpdate = self.Lua.globals()["update"]
@@ -27,6 +29,6 @@ class LuaEngine:
         if self.LuaUpdate:
             self.LuaUpdate(dt)
 
-    def Draw(self):
+    def Render(self):
         if self.LuaDraw:
             self.LuaDraw()

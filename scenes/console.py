@@ -25,6 +25,29 @@ class MainScene(prisma.instances.Scene):
 
         self.LuaEngine = Lua.LuaEngine()
 
+        self.grid = []
+        for y in range(700):
+            row = []
+            for x in range(700):
+                row.append(None)
+            self.grid.append(row)
+
+        self.registerEngineLuaFunctions()
+
+    def registerEngineLuaFunctions(self):
+        def spr(sprite, x, y):
+            if x < 0 or x >= 700 or y < 0 or y >= 700:
+                return
+            if not self.grid[y][x]:
+                imageSprite = prisma.instances.Sprite(self)
+                imageSprite.Image = pyglet.image.load("res/" + sprite)
+                imageSprite.Position = prisma.Vector2(x, y)
+                self.grid[y][x] = [imageSprite, 1]
+            else:
+                self.grid[y][x][1] = 1
+
+        self.LuaEngine.RegisterGlobalFunction("spr", spr)
+
     def updateText(self, newText):
         self.string = newText
         self.label.Text = self.string
@@ -51,3 +74,18 @@ class MainScene(prisma.instances.Scene):
 
     def Update(self, dt):
         super().Update(dt)
+        self.LuaEngine.Update(dt)
+
+    def Render(self):
+        super().Render()
+        self.LuaEngine.Render()
+
+        for y in range(700):
+            for x in range(700):
+                if self.grid[y][x] is not None:
+                    if self.grid[y][x][1] == 0:
+                        self.grid[y][x][0].Destroy()
+                        del self.grid[y][x][0]
+                        self.grid[y][x] = None
+                    else:
+                        self.grid[y][x][1] = 0
