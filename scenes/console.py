@@ -85,7 +85,7 @@ class MainScene(prisma.instances.Scene):
         text = text.strip()
         if text[0:3] == "run":
             fileName = text[3:len(text)].strip()
-            self.LuaEngine.ExecuteLuaFile(fileName)
+            self.LuaEngine.ExecuteLuaFile(fileName + ".lua")
             self.running = True
 
     def onkey(self, button, modifiers):
@@ -122,6 +122,7 @@ class MainScene(prisma.instances.Scene):
             s = prisma.instances.Sprite(self)
             s.Image = tex
             s.Position = prisma.Vector2(x, y)
+            s.Size = prisma.Vector2(tex.width * 2, tex.height * 2)
             
             self.activeSprites.append(s)
 
