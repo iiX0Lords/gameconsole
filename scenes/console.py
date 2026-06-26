@@ -49,8 +49,8 @@ class MainScene(prisma.instances.Scene):
             
         self.LuaEngine.RegisterGlobalFunction("cls", cls)
 
-        def spr(sprite, x, y):
-            self.drawQueue.append((sprite, x, y))
+        def spr(sprite, x, y, sizeX = None, sizeY = None):
+            self.drawQueue.append((sprite, x, y, sizeX, sizeY))
 
         self.LuaEngine.RegisterGlobalFunction("spr", spr)
 
@@ -116,13 +116,13 @@ class MainScene(prisma.instances.Scene):
 
         self.LuaEngine.Render()
 
-        for spriteName, x, y in self.drawQueue:
+        for spriteName, x, y, sizeX, sizeY in self.drawQueue:
             tex = self.get_texture(spriteName)
 
             s = prisma.instances.Sprite(self)
             s.Image = tex
             s.Position = prisma.Vector2(x, y)
-            s.Size = prisma.Vector2(tex.width * 2, tex.height * 2)
+            s.Size = prisma.Vector2(sizeX or tex.width, sizeY or tex.height)
             
             self.activeSprites.append(s)
 
